@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func dayOne(scanner *bufio.Scanner) int {
+func dayOne(scanner *bufio.Scanner, part int) int {
 	left := []int{}
 	right := []int{}
 
@@ -29,12 +29,36 @@ func dayOne(scanner *bufio.Scanner) int {
 	slices.Sort(left)
 	slices.Sort(right)
 
-	i := 0
-	d := 0.0
-	for i < len(left) {
-		d += math.Abs(float64(left[i] - right[i]))
-		i += 1
+	if part == 1 {
+		i := 0
+		d := 0.0
+		for i < len(left) {
+			d += math.Abs(float64(left[i] - right[i]))
+			i += 1
+		}
+
+		return int(d)
 	}
 
-	return int(d)
+	if part == 2 {
+		freq := make(map[int]int)
+		k := 0
+		for i := range left {
+			lookingFor := left[i]
+			for right[k] < lookingFor {
+				k += 1
+			}
+			for right[k] == lookingFor {
+				freq[lookingFor] += 1
+				k += 1
+			}
+		}
+		sum := 0
+		for i := 0; i < len(left); i++ {
+			sum += left[i] * freq[left[i]]
+		}
+		return sum
+	}
+
+	return -1
 }
