@@ -6,29 +6,7 @@ import (
 )
 
 func dayFive(scanner *bufio.Scanner, part int) int {
-	scanningRules := true
-	rules := make(map[int][]int)
-	updates := [][]int{}
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line == "" {
-			scanningRules = false
-			continue
-		}
-		if scanningRules {
-			pageAfter := parsePageNumber(line, [2]int{0, 1})
-			pageBefore := parsePageNumber(line, [2]int{3, 4})
-			rules[pageBefore] = append(rules[pageBefore], pageAfter)
-		} else {
-			i := 0
-			update := []int{}
-			for i < len(line) {
-				update = append(update, parsePageNumber(line, [2]int{i, i + 1}))
-				i += 3
-			}
-			updates = append(updates, update)
-		}
-	}
+	rules, updates := parseDayFiveInput(scanner)
 
 	midPages := []int{}
 	for _, update := range updates {
@@ -75,6 +53,37 @@ func dayFive(scanner *bufio.Scanner, part int) int {
 		sum += page
 	}
 	return sum
+}
+
+type Rules map[int][]int
+type Updates [][]int
+
+func parseDayFiveInput(scanner *bufio.Scanner) (Rules, Updates) {
+	scanningRules := true
+	rules := make(Rules)
+	updates := Updates{}
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == "" {
+			scanningRules = false
+			continue
+		}
+		if scanningRules {
+			pageAfter := parsePageNumber(line, [2]int{0, 1})
+			pageBefore := parsePageNumber(line, [2]int{3, 4})
+			rules[pageBefore] = append(rules[pageBefore], pageAfter)
+		} else {
+			i := 0
+			update := []int{}
+			for i < len(line) {
+				update = append(update, parsePageNumber(line, [2]int{i, i + 1}))
+				i += 3
+			}
+			updates = append(updates, update)
+		}
+	}
+
+	return rules, updates
 }
 
 func parsePageNumber(line string, indexes [2]int) int {

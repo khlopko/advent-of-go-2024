@@ -25,6 +25,7 @@ func main() {
 
 	scanner := bufio.NewScanner(file)
 
+	timing := NewTiming()
 	switch day {
 	case 1:
 		output := dayOne(scanner, part)
@@ -41,7 +42,11 @@ func main() {
 	case 5:
 		output := dayFive(scanner, part)
 		_run(part, isTest, [2]int{143, 123}, output)
+	case 6:
+		output := daySix(scanner, part, timing)
+		_run(part, isTest, [2]int{41, 6}, output)
 	}
+	fmt.Printf("Total elapsed time: %+v\n", timing.Accum())
 }
 
 func _run(part int, isTest bool, expectations [2]int, result int) {
